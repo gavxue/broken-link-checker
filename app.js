@@ -1,0 +1,28 @@
+const express = require('express')
+const { spawn } = require('child_process')
+
+const app = express()
+
+app.set('view engine', 'ejs')
+
+app.use(express.static('public'))
+app.use(express.urlencoded({ extended: true }))
+
+app.get('/', (req, res) => {
+    var dataset = []
+    const python = spawn('.venv/Scripts/python', ['main.py'])
+
+    python.stdout.on('data', function (data) {
+        console.log('piping data ...')
+        dataset = String(data).split('\r\n')
+    })
+
+    python.on('close', (code) => {
+        console.log(`closing with code ${code}`)
+        res.render('index.ejs', { dataset })
+    })
+})
+
+app.listen(3000, () => {
+    console.log('listening on port 3000')
+})
