@@ -10,7 +10,7 @@ app.use(express.urlencoded({ extended: true }))
 
 app.get('/', (req, res) => {
     var dataset = []
-    const python = spawn('.venv/Scripts/python', ['main.py'])
+    const python = spawn('python', ['main.py'])
 
     python.stdout.on('data', function (data) {
         console.log('piping data ...')
