@@ -13,10 +13,17 @@
 
     <label for="url">Please enter URL</label>
     <input type="text" id="url">
-    <button onclick="getInput()">Submit</button>
+    <button>Submit</button>
 
     <h2>Output</h2>
     <div id="output"></div>
+    <ul>
+        <% dataset.forEach(data => { %>
+            <li>
+                <%= data %>
+            </li>
+        <% }) %>
+    </ul>
     <script type="module" src="index.js"></script>
 </body>
 
