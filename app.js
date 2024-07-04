@@ -11,6 +11,10 @@ app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
 
 app.get('/', (req, res) => {
+    res.render('index.ejs')
+})
+
+app.get('/output', (req, res) => {
     var dataset = []
     const python = spawn('python', ['main.py'])
 
@@ -21,7 +25,7 @@ app.get('/', (req, res) => {
 
     python.on('close', (code) => {
         console.log(`closing with code ${code}`)
-        res.render('index.ejs', { dataset })
+        res.render('output.ejs', { dataset })
     })
 })
 
