@@ -1,7 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 
-from modules import Page
+class Page:
+    def __init__(self, name, url):
+        self.name = name
+        self.url = url
 
 url = "https://uwaterloo.ca/civil-environmental-engineering-information-technology"
 
