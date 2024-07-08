@@ -46,24 +46,29 @@ def check():
             line = link.text.strip() + ' - '
 
             if 'href' not in link.attrs:
-                line += 'ERROR - NO HREF FOUND'
+                line += 'ERROR (NO HREF FOUND)'
+                load.append(line)
+                continue
+            if 'mailto:' in link['href']:
+                line += 'MAIL LINK (NEEDS MANUAL CHECK)'
+                load.append(line)
                 continue
             if "https://" not in link['href']:
-                line += 'ERROR - MUST USE ABSOLUTE URL'
-                continue
+                # line += 'ERROR - MUST USE ABSOLUTE URL'
+                link['href'] = 'https://uwaterloo.ca' + link['href']
 
             try:
                 res = requests.get(link['href'])
                 status = str(res.status_code).strip()
                 line += 'HTTP ' + status
             except requests.exceptions.HTTPError as errh:
-                line += "Http Error:" + errh
+                line += "Http Error"
             except requests.exceptions.ConnectionError as errc:
-                line += "Error Connecting:" + errc
+                line += "Error Connecting"
             except requests.exceptions.Timeout as errt:
-                line += "Timeout Error:" + errt
+                line += "Timeout Error"
             except requests.exceptions.RequestException as err:
-                line += "OOps: Something Else" + err
+                line += "OOps: Something Else"
 
             load.append(line)
             # print(line)
