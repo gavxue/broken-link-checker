@@ -6,13 +6,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Broken link automation</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        function loading() {
+            $('#loading').show();
+            $('#content').hide();
+        }
+    </script>
 </head>
 
 <body>
-    <form action="/" method="POST">
-        <label for="url">Enter you URL:</label>
-        <input type="text" id="url" name="url">
-    </form>
+    <div id="loading" style="display: none;">
+        <img src="../static/loading-image.gif" alt="loading...">
+    </div>
+    <div id="content">
+        <form action="/" method="POST">
+            <label for="url">Enter you URL:</label>
+            <input type="text" id="url" name="url">
+            <button onclick="loading()">Submit</button>
+        </form>
+    </div>
 </body>
 
 </html>

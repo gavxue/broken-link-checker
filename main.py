@@ -43,7 +43,7 @@ def check():
         links = main.find_all('a')
 
         for link in links:
-            line = link.text.strip() + ' - '
+            line = link.text.strip() + ' --- '
 
             if 'href' not in link.attrs:
                 line += 'ERROR (NO HREF FOUND)'
@@ -62,13 +62,13 @@ def check():
                 status = str(res.status_code).strip()
                 line += 'HTTP ' + status
             except requests.exceptions.HTTPError as errh:
-                line += "Http Error"
+                line += "HTTP ERROR"
             except requests.exceptions.ConnectionError as errc:
-                line += "Error Connecting"
+                line += "ERROR CONNECTING"
             except requests.exceptions.Timeout as errt:
-                line += "Timeout Error"
+                line += "TIMEOUT ERROR"
             except requests.exceptions.RequestException as err:
-                line += "OOps: Something Else"
+                line += "UNKNOWN ERROR"
 
             load.append(line)
             # print(line)

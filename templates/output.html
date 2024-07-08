@@ -26,7 +26,7 @@
 </head>
 <body>
     {% for message in messages %}
-        {% if '-' in message %}
+        {% if '---' in message %}
             {% if 'HTTP 200' in message %}
                 <p class="success">{{ message }}</p>
             {% elif 'MAIL LINK' in message %}
