@@ -6,12 +6,6 @@ class Page:
         self.name = name
         self.url = url
 
-    def toJSON(self):
-        return json.dumps(
-            self,
-            default=lambda o: o.__dict__, 
-            sort_keys=True,
-            indent=4)
 
 def check():
     url = "https://uwaterloo.ca/civil-environmental-engineering-information-technology"
