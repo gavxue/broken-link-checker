@@ -3,6 +3,7 @@ from flask_socketio import SocketIO, emit
 from threading import Lock
 import requests
 from bs4 import BeautifulSoup
+import json
 
 # from main import check, Page
 
@@ -25,10 +26,8 @@ results = []
 
 def background_thread():
     global menu_links
-    global results
     for menu_link in menu_links:    
-        results.append(menu_link.name)
-        print(menu_link.url)
+        result = []
         page = requests.get(menu_link.url)
         page_soup = BeautifulSoup(page.text, 'html.parser')
         main = page_soup.find('main')
@@ -39,11 +38,11 @@ def background_thread():
 
             if 'href' not in link.attrs:
                 line += 'ERROR (NO HREF FOUND)'
-                results.append(line)
+                result.append(line)
                 continue
             if 'mailto:' in link['href']:
                 line += 'MAIL LINK (NEEDS MANUAL CHECK)'
-                results.append(line)
+                result.append(line)
                 continue
             if "https://" not in link['href']:
                 # line += 'ERROR - MUST USE ABSOLUTE URL'
@@ -62,7 +61,7 @@ def background_thread():
             except requests.exceptions.RequestException as err:
                 line += "UNKNOWN ERROR"
 
-            results.append(line)
+            result.append(line)
 
             socketio.emit('my_response', {'data': line})
 
@@ -105,7 +104,7 @@ def handle_broadcast(data):
 @socketio.event
 def connect():
     global menu_links
-    my_url = "https://uwaterloo.ca/civil-environmental-engineering-information-technology"
+    my_url = "https://uwaterloo.ca/civil-environmental-engineering"
 
     homepage = requests.get(my_url)
 
@@ -121,8 +120,6 @@ def connect():
 
         for a in links:
             menu_links.append(Page(a.text.strip(), "https://uwaterloo.ca" + a['href'].strip()))
-
-    # print(menu_links)
 
     global thread
     with thread_lock:
