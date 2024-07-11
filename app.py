@@ -67,8 +67,15 @@ def index():
 
 @app.route('/results', methods=['POST'])
 def results():
+    socketio.run(app, debug=True, port=5004)
     print(request.form.get('url'))
     return render_template('results.html', async_mode=socketio.async_mode)
+
+
+@app.route('/stop', methods=["POST"])
+def stop():
+    socketio.stop()
+    return 'Automation as been stopped'
 
 
 @socketio.event
@@ -103,6 +110,6 @@ def connect():
             thread = socketio.start_background_task(background_thread)
     emit('my_response', {'data': 'Connected'})
 
-if __name__ == '__main__':
-    socketio.run(app, debug=True, port=5004)
+# if __name__ == '__main__':
+#     socketio.run(app, debug=True, port=5004)
 
