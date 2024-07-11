@@ -25,8 +25,8 @@
         // The callback function is invoked whenever the server emits data
         // to the client. The data is then displayed in the "Received"
         // section of the page.
-        socket.on('my_response', function (msg) {
-            $('#log').append('<p>' + msg.data + '</p>')
+        socket.on('response', function (res) {
+            $('#log').append(`<p class="${res.class}">${res.message}</p>`)
         });
 
         $("button#stop").on('click', function() {
@@ -34,6 +34,7 @@
         })
     });
 </script>
+<link rel="stylesheet" href="/static/styles.css">
 {% endblock %}
 {% block main %}
 <h1>Results</h1>
