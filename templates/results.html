@@ -28,13 +28,15 @@
         socket.on('my_response', function (msg) {
             $('#log').append('<p>' + msg.data + '</p>')
         });
+
+        $("button#stop").on('click', function() {
+            socket.emit('stop')
+        })
     });
 </script>
 {% endblock %}
 {% block main %}
 <h1>Results</h1>
-<form action="/stop" method="POST">
-    <button>Stop</button>
-</form>
+<button id="stop">Stop</button>
 <div id="log"></div>
 {% endblock %}

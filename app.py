@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
-from threading import Lock
+from threading import Lock, Event
 import requests
 from bs4 import BeautifulSoup
 
@@ -15,49 +15,59 @@ app = Flask(__name__)
 socketio = SocketIO(app, async_mode=async_mode)
 thread = None
 thread_lock = Lock()
+thread_event = Event()
 
 menu_links = []
 
-def background_thread():
+def background_thread(event):
+    global thread
     global menu_links
-    for menu_link in menu_links:    
-        result = []
-        page = requests.get(menu_link.url)
-        page_soup = BeautifulSoup(page.text, 'html.parser')
-        main = page_soup.find('main')
-        links = main.find_all('a')
+    try:
+        while event.is_set():
+            for menu_link in menu_links:    
+                result = []
+                page = requests.get(menu_link.url)
+                page_soup = BeautifulSoup(page.text, 'html.parser')
+                main = page_soup.find('main')
+                links = main.find_all('a')
 
-        for link in links:
-            line = link.text.strip() + ' --- '
+                for link in links:
+                    line = link.text.strip() + ' --- '
 
-            if 'href' not in link.attrs:
-                line += 'ERROR (NO HREF FOUND)'
-                result.append(line)
-                continue
-            if 'mailto:' in link['href']:
-                line += 'MAIL LINK (NEEDS MANUAL CHECK)'
-                result.append(line)
-                continue
-            if "https://" not in link['href']:
-                # line += 'ERROR - MUST USE ABSOLUTE URL'
-                link['href'] = 'https://uwaterloo.ca' + link['href']
+                    if 'href' not in link.attrs:
+                        line += 'ERROR (NO HREF FOUND)'
+                        result.append(line)
+                        continue
+                    if 'mailto:' in link['href']:
+                        line += 'MAIL LINK (NEEDS MANUAL CHECK)'
+                        result.append(line)
+                        continue
+                    if "https://" not in link['href']:
+                        # line += 'ERROR - MUST USE ABSOLUTE URL'
+                        link['href'] = 'https://uwaterloo.ca' + link['href']
 
-            try:
-                res = requests.get(link['href'])
-                status = str(res.status_code).strip()
-                line += 'HTTP ' + status
-            except requests.exceptions.HTTPError as errh:
-                line += "HTTP ERROR"
-            except requests.exceptions.ConnectionError as errc:
-                line += "ERROR CONNECTING"
-            except requests.exceptions.Timeout as errt:
-                line += "TIMEOUT ERROR"
-            except requests.exceptions.RequestException as err:
-                line += "UNKNOWN ERROR"
+                    try:
+                        res = requests.get(link['href'])
+                        status = str(res.status_code).strip()
+                        line += 'HTTP ' + status
+                    except requests.exceptions.HTTPError as errh:
+                        line += "HTTP ERROR"
+                    except requests.exceptions.ConnectionError as errc:
+                        line += "ERROR CONNECTING"
+                    except requests.exceptions.Timeout as errt:
+                        line += "TIMEOUT ERROR"
+                    except requests.exceptions.RequestException as err:
+                        line += "UNKNOWN ERROR"
 
-            result.append(line)
+                    result.append(line)
 
-            socketio.emit('my_response', {'data': line})
+                    socketio.emit('my_response', {'data': line})
+
+                    if not event.is_set():
+                        return
+    finally:
+        event.clear()
+        thread = None
 
 
 @app.route('/')
@@ -71,12 +81,6 @@ def results():
     return render_template('results.html', async_mode=socketio.async_mode)
 
 
-@app.route('/stop', methods=["POST"])
-def stop():
-    socketio.stop()
-    return 'Automation as been stopped'
-
-
 @socketio.event
 def my_event(message):
     emit('my_response',
@@ -85,6 +89,8 @@ def my_event(message):
 
 @socketio.event
 def connect():
+    emit('my_response', {'data': 'Connected'})
+
     global menu_links
     my_url = "https://uwaterloo.ca/civil-environmental-engineering"
 
@@ -106,8 +112,19 @@ def connect():
     global thread
     with thread_lock:
         if thread is None:
-            thread = socketio.start_background_task(background_thread)
-    emit('my_response', {'data': 'Connected'})
+            thread_event.set()
+            thread = socketio.start_background_task(background_thread, thread_event)
+
+
+@socketio.event
+def stop():
+    global thread
+    thread_event.clear()
+    with thread_lock:
+        if thread is not None:
+            thread.join()
+            thread = None
+    
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, port=5004)
