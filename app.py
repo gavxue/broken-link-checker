@@ -67,7 +67,6 @@ def index():
 
 @app.route('/results', methods=['POST'])
 def results():
-    socketio.run(app, debug=True, port=5004)
     print(request.form.get('url'))
     return render_template('results.html', async_mode=socketio.async_mode)
 
@@ -110,6 +109,6 @@ def connect():
             thread = socketio.start_background_task(background_thread)
     emit('my_response', {'data': 'Connected'})
 
-# if __name__ == '__main__':
-#     socketio.run(app, debug=True, port=5004)
+if __name__ == '__main__':
+    socketio.run(app, debug=True, port=5004)
 
