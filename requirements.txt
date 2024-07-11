@@ -3,3 +3,5 @@ requests
 gunicorn
 flask
 flask_socketio
+eventlet
+gevent-websocket

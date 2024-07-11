@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 from threading import Lock
 import requests
@@ -73,9 +73,8 @@ def results():
 
 @socketio.event
 def my_event(message):
-    session['receive_count'] = session.get('receive_count', 0) + 1
     emit('my_response',
-         {'data': message['data'], 'count': session['receive_count']})
+         {'data': message['data']})
 
 
 @socketio.event
@@ -102,8 +101,8 @@ def connect():
     with thread_lock:
         if thread is None:
             thread = socketio.start_background_task(background_thread)
-    emit('my_response', {'data': 'Connected', 'count': 0})
+    emit('my_response', {'data': 'Connected'})
 
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app, debug=True, port=5004)
 
