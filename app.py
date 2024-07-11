@@ -28,13 +28,13 @@ def check_page(url, event):
 
     for link in links:
         line = link.text.strip() + ' --- '
-        status = "danger"
+        status = "text-danger"
 
         if 'href' not in link.attrs:
             line += 'ERROR (NO HREF FOUND)'
         elif 'mailto:' in link['href']:
             line += 'MAIL LINK (NEEDS MANUAL CHECK)'
-            status = 'warning'
+            status = 'text-warning'
         else:
             if "https://" not in link['href']:
                 # line += 'ERROR - MUST USE ABSOLUTE URL'
@@ -46,7 +46,7 @@ def check_page(url, event):
                 status_code = str(res.status_code).strip()
                 line += 'HTTP ' + status_code
                 if status_code == '200':
-                    status = 'success'
+                    status = 'text-success'
             except requests.exceptions.HTTPError:
                 line += "HTTP ERROR"
             except requests.exceptions.ConnectionError:
@@ -118,7 +118,7 @@ def background_thread(event):
             
             # log completion
             socketio.emit('response', {'message': 'Success!'})
-            
+
     finally:
         event.clear()
         thread = None
