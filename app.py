@@ -3,9 +3,6 @@ from flask_socketio import SocketIO, emit
 from threading import Lock
 import requests
 from bs4 import BeautifulSoup
-import json
-
-# from main import check, Page
 
 class Page:
     def __init__(self, name, url):
@@ -19,10 +16,7 @@ socketio = SocketIO(app, async_mode=async_mode)
 thread = None
 thread_lock = Lock()
 
-# url = 'https://api.coinbase.com/v2/prices/btc-usd/spot'
-
 menu_links = []
-results = []
 
 def background_thread():
     global menu_links
@@ -66,21 +60,15 @@ def background_thread():
             socketio.emit('my_response', {'data': line})
 
 
-    # count = 0
-    # while True:
-    #     socketio.sleep(3)
-    #     count += 1
-    #     price = ((requests.get(url)).json())['data']['amount']
-    #     socketio.emit('my_response', {'data': 'Bitcoin current price (USD): ' + price, 'count': count})
+@app.route('/')
+def index():  
+    return render_template('index.html')
 
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    # if request.method == 'POST':
-    #     messages = check()
-    #     return render_template('output.html', messages=messages)
-    
-    return render_template('index.html', async_mode=socketio.async_mode)
+@app.route('/results', methods=['POST'])
+def results():
+    print(request.form.get('url'))
+    return render_template('results.html', async_mode=socketio.async_mode)
 
 
 @socketio.event
@@ -89,17 +77,6 @@ def my_event(message):
     emit('my_response',
          {'data': message['data'], 'count': session['receive_count']})
 
-# Receive the test request from client and send back a test response
-@socketio.on('test_message')
-def handle_message(data):
-    print('received message: ' + str(data))
-    emit('test_response', {'data': 'Test response sent'})
-
-# Broadcast a message to all clients
-@socketio.on('broadcast_message')
-def handle_broadcast(data):
-    print('received: ' + str(data))
-    emit('broadcast_response', {'data': 'Broadcast sent'}, broadcast=True)
 
 @socketio.event
 def connect():
