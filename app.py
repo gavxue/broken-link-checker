@@ -71,12 +71,16 @@ def background_thread(event):
     try:
         if event.is_set():
             homepage = requests.get(url)
-
             soup = BeautifulSoup(homepage.text, 'html.parser')
 
-            # scraping pages
-            # menu_links = [(Page('Home', url))]
-            nav = soup.find_all('nav', {'class': 'uw-horizontal-nav'})[1].find('ul')
+            # homepage
+            socketio.emit('response', {'message': "Home", 'class': 'section'})
+            check_page(url, event)
+
+            navs = soup.find_all('nav', {'class': 'uw-horizontal-nav'})
+
+            # main nav
+            nav = navs[1].find('ul')
             menu_items = nav.find_all('li', {'class': 'menu__item'}, recursive=False)
 
             for menu_item in menu_items:
@@ -92,9 +96,29 @@ def background_thread(event):
 
                     if not live:
                         return
+
+            # secondary nav (if exists)
+            if len(navs) == 3:
+                sec_nav = navs[2].find('ul')
+                menu_items = sec_nav.find_all('li', {'class': 'menu__item'}, recursive=False)
+
+                for menu_item in menu_items:
+                    # log section
+                    menu_item_title = menu_item.find('a').text.strip()
+                    socketio.emit('response', {'message': menu_item_title, 'class': 'section'})
+                    submenu_items = menu_item.find_all('a', href=True)
+                    
+                    for submenu_item in submenu_items:
+                        # log section item
+                        socketio.emit('response', {'message': submenu_item.text.strip(), 'class': 'page'})
+                        live = check_page('https://uwaterloo.ca' + submenu_item.get('href').strip(), event)
+
+                        if not live:
+                            return
             
             # log completion
             socketio.emit('response', {'message': 'Success!'})
+            
     finally:
         event.clear()
         thread = None
