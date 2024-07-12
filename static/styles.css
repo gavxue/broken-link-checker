@@ -1,12 +1,7 @@
-.section {
-    text-transform: uppercase;
-    font-weight: bold;
-    color: purple;
-}
-
 .page {
     text-transform: uppercase;
     font-style: italic;
+    font-weight: bold;
     color: blue;
 }
 

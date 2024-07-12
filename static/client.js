@@ -8,8 +8,8 @@ $(document).ready(function () {
     // The callback function is invoked whenever the server emits data
     // to the client. The data is then displayed in the "Received"
     // section of the page.
-    socket.on('response', function (res) {
-        $('#log').append(`<p class="${res.class}">${res.message}</p>`)
+    socket.on('status', function (res) {
+        $('#status').append(`<p class="${res.class}">${res.message}</p>`)
     });
 
     socket.on('create_section', function (res) {
@@ -29,7 +29,7 @@ $(document).ready(function () {
     })
 
     socket.on('create_link', function (res) {
-        $(`#body-${res.section_id}`).append(`<p class="${res.class}">${res.message}</p>`)
+        $(`#body-${res.section_id}`).append(`<p class="${res.class} m-0">${res.message}</p>`)
     })
 
     // stop background task execution

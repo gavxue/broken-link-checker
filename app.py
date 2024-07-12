@@ -57,7 +57,6 @@ def check_page(url, id, event):
                 line += "UNKNOWN ERROR"
 
         # log link status
-        # socketio.emit('response', {'message': line, 'class': status})
         socketio.emit('create_link', {'section_id': id, 'message': line, 'class': status})
 
         if not event.is_set():
@@ -75,7 +74,6 @@ def background_thread(event):
             soup = BeautifulSoup(homepage.text, 'html.parser')
 
             # homepage
-            # socketio.emit('response', {'message': "Home", 'class': 'section'})
             socketio.emit('create_section', {'id': 'home', 'heading': 'Home'})
             check_page(url, 'home', event)
 
@@ -88,13 +86,11 @@ def background_thread(event):
             for i, menu_item in enumerate(menu_items):
                 # log section
                 menu_item_title = menu_item.find('a').text.strip()
-                # socketio.emit('response', {'message': menu_item_title, 'class': 'section'})
                 socketio.emit('create_section', {'id': i, 'heading': menu_item_title})
                 submenu_items = menu_item.find_all('a', href=True)
                 
                 for submenu_item in submenu_items:
                     # log section item
-                    # socketio.emit('response', {'message': submenu_item.text.strip(), 'class': 'page'})
                     socketio.emit('create_link', {'section_id': i, 'message': submenu_item.text.strip(), 'class': 'page'})
                     live = check_page('https://uwaterloo.ca' + submenu_item.get('href').strip(), i, event)
 
@@ -109,13 +105,11 @@ def background_thread(event):
                 for i, menu_item in enumerate(menu_items):
                     # log section
                     menu_item_title = menu_item.find('a').text.strip()
-                    # socketio.emit('response', {'message': menu_item_title, 'class': 'section'})
                     socketio.emit('create_section', {'id': str(i) + 'sec', 'heading': menu_item_title})
                     submenu_items = menu_item.find_all('a', href=True)
                     
                     for submenu_item in submenu_items:
                         # log section item
-                        # socketio.emit('response', {'message': submenu_item.text.strip(), 'class': 'page'})
                         socketio.emit('create_link', {'section_id': str(i) + 'sec', 'message': submenu_item.text.strip(), 'class': 'page'})
                         live = check_page('https://uwaterloo.ca' + submenu_item.get('href').strip(), str(i) + 'sec', event)
 
@@ -123,7 +117,7 @@ def background_thread(event):
                             return
             
             # log completion
-            socketio.emit('response', {'message': 'Success!'})
+            socketio.emit('status', {'message': 'Success!', 'class': 'text-success'})
 
     finally:
         event.clear()
@@ -159,6 +153,7 @@ def stop():
         if thread is not None:
             thread.join()
             thread = None
+    socketio.emit('status', {'message': 'Execution stopped', 'class': 'text-danger'})
     
 
 if __name__ == '__main__':

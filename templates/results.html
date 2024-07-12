@@ -14,8 +14,20 @@
 
 {% block main %}
 <main class="container">
-    <h1>Results</h1>
-    <button id="stop">Stop</button>
-    <div id="log" class="accordion my-5"></div>
+    <div class="row">
+        <div class="col-8">
+            <div>
+                <h2 class="mb-3">Results</h2>
+                <button id="stop" class="btn btn-danger my-3">Stop</button>
+                <button id="go-back" class="btn btn-primary my-3">Go back</button>
+            </div>
+            <div id="log" class="accordion h-auto my-3"></div>
+            <div id="status" class="position-relative"></div>
+        </div>
+        <div class="col-4">
+            <p>Test awgfeawfewa</p>
+        </div>
+    </div>
+
 </main>
 {% endblock %}
