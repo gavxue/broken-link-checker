@@ -8,7 +8,40 @@
                 value="https://uwaterloo.ca/civil-environmental-engineering-information-technology">
             <button class="btn btn-primary">Submit</button>
         </div>
-
+        <div class="my-5">
+            <h2>How to use</h2>
+            <ol>
+                <li>Enter the URL in the input box above. It must be uwaterloo site and use the WCMS 3 template (this is
+                    important!!!).</li>
+                <li>You will be redirected to a new page (hopefully...) that shows the output log as the site performs
+                    its automated testing.</li>
+                <li>Use the collapsible sections to minimize sections.</li>
+                <li>Review the statuses of each link and make changes to your site accordingly.</li>
+            </ol>
+        </div>
+        <div class="my-5">
+            <h2>Check for site compatibility</h2>
+            <div class="row justify-content-around my-4">
+                <div class="col-4">
+                    <div class="card p-3 bg-danger border-0">
+                        <div class="card-body text-center">
+                            <img class="w-100" src="/static/wcms2.png" alt="wcms2 sample page">
+                            <p class="h3 text-white mt-3">WCMS 2</p>
+                            <i class="bi bi-x-square-fill text-white h3"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card p-3 bg-success border-0">
+                        <div class="card-body text-center">
+                            <img class="w-100" src="/static/wcms3.png" alt="wcms3 sample page">
+                            <p class="h3 text-white mt-3">WCMS 3</p>
+                            <i class="bi bi-check-square-fill text-white h3"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
 </main>
 {% endblock %}
