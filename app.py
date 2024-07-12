@@ -31,12 +31,13 @@ def check_page(url, id, event):
         status = "text-danger"
 
         if 'href' not in link.attrs:
-            line += 'ERROR (NO HREF FOUND)'
+            line += 'NO HREF FOUND'
+            status = 'text-warning'
         elif 'mailto:' in link['href']:
-            line += 'MAIL LINK (NEEDS MANUAL CHECK)'
+            line += 'MAIL LINK'
             status = 'text-warning'
         else:
-            if "https://" not in link['href']:
+            if "https://" not in link['href'] and 'http://' not in link['href']:
                 # line += 'ERROR - MUST USE ABSOLUTE URL'
                 # continue
                 link['href'] = 'https://uwaterloo.ca' + link['href']
@@ -129,7 +130,7 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/results', methods=['POST'])
+@app.route('/results', methods=['GET', 'POST'])
 def results():
     global url
     url = request.form.get('url')
@@ -147,13 +148,14 @@ def connect():
 
 @socketio.event
 def stop():
+    socketio.emit('status', {'message': 'Execution stopped', 'class': 'text-danger'})
     global thread
     thread_event.clear()
     with thread_lock:
         if thread is not None:
             thread.join()
             thread = None
-    socketio.emit('status', {'message': 'Execution stopped', 'class': 'text-danger'})
+    
     
 
 if __name__ == '__main__':

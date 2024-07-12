@@ -10,6 +10,7 @@ $(document).ready(function () {
     // section of the page.
     socket.on('status', function (res) {
         $('#status').append(`<p class="${res.class}">${res.message}</p>`)
+        $('button#stop').prop('disabled', true)
     });
 
     socket.on('create_section', function (res) {
@@ -35,10 +36,29 @@ $(document).ready(function () {
     // stop background task execution
     $("button#stop").on('click', function () {
         socket.emit('stop')
-        $(this).prop('disabled', true)
     })
 
-    $("button#go-back").on('click', function () {
+    $("a#go-back").on('click', function () {
         socket.emit('stop')
     })
+
+    $(window).on('beforeunload', function(event) {
+        socket.emit('stop')
+    })
+
+    // back to top
+    $(window).scroll(function () {
+        if ($(this).scrollTop() > 50) {
+            $('#back-to-top').fadeIn();
+        } else {
+            $('#back-to-top').fadeOut();
+        }
+    });
+    
+    $('#back-to-top').click(function () {
+        $('body,html').animate({
+            scrollTop: 0
+        }, 400);
+        return false;
+    });
 });

@@ -6,6 +6,13 @@
 }
 
 #info {
-    height: 500px;
+    height: auto;
     top: 100px;
+}
+
+#back-to-top {
+    position: fixed;
+    display: none;
+    right: 25px;
+    bottom: 25px;
 }
