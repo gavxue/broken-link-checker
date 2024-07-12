@@ -13,21 +13,23 @@
 {% endblock %}
 
 {% block main %}
-<main class="container">
-    <div class="row">
+<main class="container my-5">
+    <div class="row gx-5">
         <div class="col-8">
             <div>
                 <h2 class="mb-3">Results</h2>
                 <button id="stop" class="btn btn-danger my-3">Stop</button>
-                <button id="go-back" class="btn btn-primary my-3">Go back</button>
+                <form action="/" class="d-inline">
+                    <button id="go-back" class="btn btn-primary my-3">Go back</button>
+                </form>
             </div>
             <div id="log" class="accordion h-auto my-3"></div>
             <div id="status" class="position-relative"></div>
         </div>
-        <div class="col-4">
-            <p>Test awgfeawfewa</p>
+        <div id="info" class="col-4 card sticky-top p-3">
+            <h2 class="text-center">Status Codes</h2>
+            <p>Listed below are some common HTTP status codes and what they mean:</p>
         </div>
     </div>
-
 </main>
 {% endblock %}

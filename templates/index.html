@@ -1,11 +1,14 @@
 {% extends "layout.html" %}
 {% block main %}
-<main class="container text-center">
+<main class="container my-5">
     <form action="/results" method="POST">
-        <label for="url" class="mx-2">Enter URL:</label>
-        <input id='url' name='url' type="text" class="w-50 mx-2"
-            value="https://uwaterloo.ca/civil-environmental-engineering-information-technology">
-        <button class="mx-2">Submit</button>
+        <div class="form-group">
+            <label for="url">Enter URL:</label>
+            <input id='url' name='url' type="text" class="form-control my-3"
+                value="https://uwaterloo.ca/civil-environmental-engineering-information-technology">
+            <button class="btn btn-primary">Submit</button>
+        </div>
+
     </form>
 </main>
 {% endblock %}

@@ -5,6 +5,7 @@
     color: blue;
 }
 
-#log {
+#info {
     height: 500px;
+    top: 100px;
 }

@@ -35,5 +35,10 @@ $(document).ready(function () {
     // stop background task execution
     $("button#stop").on('click', function () {
         socket.emit('stop')
+        $(this).prop('disabled', true)
+    })
+
+    $("button#go-back").on('click', function () {
+        socket.emit('stop')
     })
 });
