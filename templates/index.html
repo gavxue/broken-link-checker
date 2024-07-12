@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 {% block main %}
-<main class="container">
+<main class="container text-center">
     <form action="/results" method="POST">
-        <label for="url">Enter URL:</label>
-        <input id='url' name='url' type="text"
+        <label for="url" class="mx-2">Enter URL:</label>
+        <input id='url' name='url' type="text" class="w-50 mx-2"
             value="https://uwaterloo.ca/civil-environmental-engineering-information-technology">
-        <button>Submit</button>
+        <button class="mx-2">Submit</button>
     </form>
 </main>
 {% endblock %}

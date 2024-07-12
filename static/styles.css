@@ -9,3 +9,7 @@
     font-style: italic;
     color: blue;
 }
+
+#log {
+    height: 500px;
+}
