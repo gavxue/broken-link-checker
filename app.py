@@ -20,7 +20,7 @@ thread_event = Event()
 menu_links = []
 url = ""
 
-def check_page(url, event):
+def check_page(url, id, event):
     page = requests.get(url)
     page_soup = BeautifulSoup(page.text, 'html.parser')
     main = page_soup.find('main')
@@ -57,7 +57,8 @@ def check_page(url, event):
                 line += "UNKNOWN ERROR"
 
         # log link status
-        socketio.emit('response', {'message': line, 'class': status})
+        # socketio.emit('response', {'message': line, 'class': status})
+        socketio.emit('create_link', {'section_id': id, 'message': line, 'class': status})
 
         if not event.is_set():
             return False
@@ -74,8 +75,9 @@ def background_thread(event):
             soup = BeautifulSoup(homepage.text, 'html.parser')
 
             # homepage
-            socketio.emit('response', {'message': "Home", 'class': 'section'})
-            check_page(url, event)
+            # socketio.emit('response', {'message': "Home", 'class': 'section'})
+            socketio.emit('create_section', {'id': 'home', 'heading': 'Home'})
+            check_page(url, 'home', event)
 
             navs = soup.find_all('nav', {'class': 'uw-horizontal-nav'})
 
@@ -83,16 +85,18 @@ def background_thread(event):
             nav = navs[1].find('ul')
             menu_items = nav.find_all('li', {'class': 'menu__item'}, recursive=False)
 
-            for menu_item in menu_items:
+            for i, menu_item in enumerate(menu_items):
                 # log section
                 menu_item_title = menu_item.find('a').text.strip()
-                socketio.emit('response', {'message': menu_item_title, 'class': 'section'})
+                # socketio.emit('response', {'message': menu_item_title, 'class': 'section'})
+                socketio.emit('create_section', {'id': i, 'heading': menu_item_title})
                 submenu_items = menu_item.find_all('a', href=True)
                 
                 for submenu_item in submenu_items:
                     # log section item
-                    socketio.emit('response', {'message': submenu_item.text.strip(), 'class': 'page'})
-                    live = check_page('https://uwaterloo.ca' + submenu_item.get('href').strip(), event)
+                    # socketio.emit('response', {'message': submenu_item.text.strip(), 'class': 'page'})
+                    socketio.emit('create_link', {'section_id': i, 'message': submenu_item.text.strip(), 'class': 'page'})
+                    live = check_page('https://uwaterloo.ca' + submenu_item.get('href').strip(), i, event)
 
                     if not live:
                         return
@@ -102,16 +106,18 @@ def background_thread(event):
                 sec_nav = navs[2].find('ul')
                 menu_items = sec_nav.find_all('li', {'class': 'menu__item'}, recursive=False)
 
-                for menu_item in menu_items:
+                for i, menu_item in enumerate(menu_items):
                     # log section
                     menu_item_title = menu_item.find('a').text.strip()
-                    socketio.emit('response', {'message': menu_item_title, 'class': 'section'})
+                    # socketio.emit('response', {'message': menu_item_title, 'class': 'section'})
+                    socketio.emit('create_section', {'id': str(i) + 'sec', 'heading': menu_item_title})
                     submenu_items = menu_item.find_all('a', href=True)
                     
                     for submenu_item in submenu_items:
                         # log section item
-                        socketio.emit('response', {'message': submenu_item.text.strip(), 'class': 'page'})
-                        live = check_page('https://uwaterloo.ca' + submenu_item.get('href').strip(), event)
+                        # socketio.emit('response', {'message': submenu_item.text.strip(), 'class': 'page'})
+                        socketio.emit('create_link', {'section_id': str(i) + 'sec', 'message': submenu_item.text.strip(), 'class': 'page'})
+                        live = check_page('https://uwaterloo.ca' + submenu_item.get('href').strip(), str(i) + 'sec', event)
 
                         if not live:
                             return
@@ -137,15 +143,7 @@ def results():
 
 
 @socketio.event
-def my_event(message):
-    emit('response',
-         {'message': message['data']})
-
-
-@socketio.event
 def connect():
-    emit('response', {'message': 'Connected'})
-
     global thread
     with thread_lock:
         if thread is None:
