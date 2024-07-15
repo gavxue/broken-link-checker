@@ -1,4 +1,4 @@
-# 🔍 Broken Link Checker
+# Broken Link Checker 🔍
 
 A web application that automates broken link detection for UWaterloo webpages. Compatible with WCMS 3 sites only.
 
