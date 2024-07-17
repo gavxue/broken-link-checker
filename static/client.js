@@ -9,7 +9,7 @@ $(document).ready(function () {
     // to the client. The data is then displayed in the "Received"
     // section of the page.
     socket.on('status', function (res) {
-        $('#status').append(`<p class="${res.class}">${res.message}</p>`)
+        $('#status').append(`<span class="${res.class}">${res.message}</span>`)
         $('button#stop').prop('disabled', true)
     });
 
@@ -50,7 +50,7 @@ $(document).ready(function () {
     })
 
     // back to top
-    $(window).scroll(function () {
+    $(window).on('scroll', function () {
         if ($(this).scrollTop() > 50) {
             $('#back-to-top').fadeIn();
         } else {
@@ -58,7 +58,7 @@ $(document).ready(function () {
         }
     });
 
-    $('#back-to-top').click(function () {
+    $('#back-to-top').on('click', function () {
         $('body,html').animate({
             scrollTop: 0
         }, 400);
@@ -77,11 +77,13 @@ $(document).ready(function () {
             }
         }
     }
-
-    const successCheckbox = document.querySelector('#success-checkbox')
-    const warningCheckbox = document.querySelector('#warning-checkbox')
-    const dangerCheckbox = document.querySelector('#danger-checkbox')
-    successCheckbox.addEventListener('change', () => {filter('success')})
-    warningCheckbox.addEventListener('change', () => {filter('warning')})
-    dangerCheckbox.addEventListener('change', () => {filter('danger')})
+    $('#success-checkbox').on('change', function () {
+        filter("success");
+    })
+    $('#warning-checkbox').on('change', function () {
+        filter('warning');
+    })
+    $('#danger-checkbox').on('change', function () {
+        filter('danger');
+    })
 });
