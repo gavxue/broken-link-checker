@@ -31,6 +31,9 @@ $(document).ready(function () {
 
     socket.on('create_link', function (res) {
         $(`#body-${res.section_id}`).append(`<p class="${res.class} m-0">${res.message}</p>`)
+        filter('success')
+        filter('warning')
+        filter('danger')
     })
 
     // stop background task execution
@@ -42,7 +45,7 @@ $(document).ready(function () {
         socket.emit('stop')
     })
 
-    $(window).on('beforeunload', function(event) {
+    $(window).on('beforeunload', function (event) {
         socket.emit('stop')
     })
 
@@ -54,11 +57,31 @@ $(document).ready(function () {
             $('#back-to-top').fadeOut();
         }
     });
-    
+
     $('#back-to-top').click(function () {
         $('body,html').animate({
             scrollTop: 0
         }, 400);
         return false;
     });
+
+    // filter messages
+    function filter(type) {
+        const messages = document.querySelectorAll(`p.text-${type}`)
+        const checkbox = document.querySelector(`#${type}-checkbox`)
+        for (let message of messages) {
+            if (checkbox.checked) {
+                message.style.display = 'block'
+            } else {
+                message.style.display = 'none'
+            }
+        }
+    }
+
+    const successCheckbox = document.querySelector('#success-checkbox')
+    const warningCheckbox = document.querySelector('#warning-checkbox')
+    const dangerCheckbox = document.querySelector('#danger-checkbox')
+    successCheckbox.addEventListener('change', () => {filter('success')})
+    warningCheckbox.addEventListener('change', () => {filter('warning')})
+    dangerCheckbox.addEventListener('change', () => {filter('danger')})
 });
