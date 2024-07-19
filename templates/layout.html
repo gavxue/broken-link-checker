@@ -1,4 +1,5 @@
 {% from 'components/header.html' import header %}
+{% from 'components/footer.html' import footer %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -19,6 +20,7 @@
 <body>
     {{ header() }}
     {% block main %}{% endblock %}
+    {{ footer() }}
 </body>
 
 </html>
