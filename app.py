@@ -17,8 +17,9 @@ thread = None
 thread_lock = Lock()
 thread_event = Event()
 
-menu_links = []
 url = ""
+section_count = 1
+section_total = 1
 
 def check_page(url, id, event):
     page = requests.get(url)
@@ -68,56 +69,103 @@ def check_page(url, id, event):
     return True
 
 
+def check_nav(menu_items, event):
+    global section_count, section_total
+
+    for menu_item in menu_items:
+        # log section
+        menu_item_title = menu_item.find('a').text.strip()
+        socketio.emit('create_section', {'id': section_count, 'heading': menu_item_title})
+        submenu_items = menu_item.find_all('a', href=True)
+        
+        for submenu_item in submenu_items:
+            # log section item
+            socketio.emit('create_link', {'section_id': section_count, 'message': submenu_item.text.strip(), 'class': 'page'})
+            live = check_page('https://uwaterloo.ca' + submenu_item.get('href').strip(), section_count, event)
+
+            if not live:
+                return False
+            
+        section_count += 1
+        socketio.emit('update_progress', {'count': section_count, 'total': section_total})
+        print(section_count, section_total)
+
+    return True
+
+
 def background_thread(event):
-    global thread
+    global thread, section_count, section_total
 
     try:
         if event.is_set():
             homepage = requests.get(url)
             soup = BeautifulSoup(homepage.text, 'html.parser')
 
+            navs = soup.find_all('nav', {'class': 'uw-horizontal-nav'})
+
+            # check for secondary nav
+            is_secondary = False
+            if len(navs) == 3:
+                is_secondary = True
+
+            # get navs
+            main_nav = navs[1].find('ul')
+            main_menu_items = main_nav.find_all('li', {'class': 'menu__item'}, recursive=False)
+            section_total += len(main_menu_items)
+
+            if is_secondary:
+                sec_nav = navs[2].find('ul')
+                sec_menu_items = sec_nav.find_all('li', {'class': 'menu__item'}, recursive=False)
+                section_total += len(sec_menu_items)
+
             # homepage
             socketio.emit('create_section', {'id': 'home', 'heading': 'Home'})
             check_page(url, 'home', event)
-
-            navs = soup.find_all('nav', {'class': 'uw-horizontal-nav'})
+            socketio.emit('update_progress', {'count': section_count, 'total': section_total})
 
             # main nav
-            nav = navs[1].find('ul')
-            menu_items = nav.find_all('li', {'class': 'menu__item'}, recursive=False)
+            live = check_nav(main_menu_items, event)
+            if not live:
+                return
 
-            for i, menu_item in enumerate(menu_items):
-                # log section
-                menu_item_title = menu_item.find('a').text.strip()
-                socketio.emit('create_section', {'id': i, 'heading': menu_item_title})
-                submenu_items = menu_item.find_all('a', href=True)
+            # secondary nav
+            if is_secondary:
+                live = check_nav(sec_menu_items, event)
+                if not live:
+                    return
+
+            # for i, menu_item in enumerate(menu_items):
+            #     # log section
+            #     menu_item_title = menu_item.find('a').text.strip()
+            #     socketio.emit('create_section', {'id': i, 'heading': menu_item_title})
+            #     submenu_items = menu_item.find_all('a', href=True)
                 
-                for submenu_item in submenu_items:
-                    # log section item
-                    socketio.emit('create_link', {'section_id': i, 'message': submenu_item.text.strip(), 'class': 'page'})
-                    live = check_page('https://uwaterloo.ca' + submenu_item.get('href').strip(), i, event)
+            #     for submenu_item in submenu_items:
+            #         # log section item
+            #         socketio.emit('create_link', {'section_id': i, 'message': submenu_item.text.strip(), 'class': 'page'})
+            #         live = check_page('https://uwaterloo.ca' + submenu_item.get('href').strip(), i, event)
 
-                    if not live:
-                        return
+            #         if not live:
+            #             return
 
             # secondary nav (if exists)
-            if len(navs) == 3:
-                sec_nav = navs[2].find('ul')
-                menu_items = sec_nav.find_all('li', {'class': 'menu__item'}, recursive=False)
+            # if len(navs) == 3:
+            #     sec_nav = navs[2].find('ul')
+            #     menu_items = sec_nav.find_all('li', {'class': 'menu__item'}, recursive=False)
 
-                for i, menu_item in enumerate(menu_items):
-                    # log section
-                    menu_item_title = menu_item.find('a').text.strip()
-                    socketio.emit('create_section', {'id': str(i) + 'sec', 'heading': menu_item_title})
-                    submenu_items = menu_item.find_all('a', href=True)
+            #     for i, menu_item in enumerate(menu_items):
+            #         # log section
+            #         menu_item_title = menu_item.find('a').text.strip()
+            #         socketio.emit('create_section', {'id': str(i) + 'sec', 'heading': menu_item_title})
+            #         submenu_items = menu_item.find_all('a', href=True)
                     
-                    for submenu_item in submenu_items:
-                        # log section item
-                        socketio.emit('create_link', {'section_id': str(i) + 'sec', 'message': submenu_item.text.strip(), 'class': 'page'})
-                        live = check_page('https://uwaterloo.ca' + submenu_item.get('href').strip(), str(i) + 'sec', event)
+            #         for submenu_item in submenu_items:
+            #             # log section item
+            #             socketio.emit('create_link', {'section_id': str(i) + 'sec', 'message': submenu_item.text.strip(), 'class': 'page'})
+            #             live = check_page('https://uwaterloo.ca' + submenu_item.get('href').strip(), str(i) + 'sec', event)
 
-                        if not live:
-                            return
+            #             if not live:
+            #                 return
             
             # log completion
             socketio.emit('status', {'message': 'Success!', 'class': 'text-success'})

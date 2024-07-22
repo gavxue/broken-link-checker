@@ -13,6 +13,10 @@ $(document).ready(function () {
         $('button#stop').prop('disabled', true)
     });
 
+    socket.on('update_progress', function (res) {
+        $('#progress-percentage').text(`${Math.round(res.count / res.total * 100)}%`)
+    })
+
     socket.on('create_section', function (res) {
         $('#log').append(`
             <div class="accordion-item">
