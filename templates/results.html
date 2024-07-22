@@ -37,15 +37,21 @@
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="warning-checkbox" checked>
-                        <label class="form-check-label text-warning" for="warning-checkbox">
-                            Warning messages
-                        </label>
-                    </div>
-                    <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="" id="danger-checkbox" checked>
                         <label class="form-check-label text-danger" for="danger-checkbox">
                             Error messages
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="auth-checkbox" checked>
+                        <label class="form-check-label text-auth" for="auth-checkbox">
+                            Authorization messages
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="warning-checkbox" checked>
+                        <label class="form-check-label text-warning" for="warning-checkbox">
+                            Warning messages
                         </label>
                     </div>
                 </div>
@@ -58,21 +64,21 @@
                             URL.
                             Check
                             to see if the link has changed or is incorrect.</li>
-                        <li><span class="text-danger">HTTP 401/403 Forbidden</span> - Not authorized to view the page.
-                            Will
-                            need
-                            to be logged in to view the page. Needs manual check.</li>
                         <li><span class="text-danger">HTTP 5xx Server Error</span> - Error on the server-end and the
                             site
                             cannot
                             be loaded.</li>
-                        <li><span class="text-danger">HTTP 999 Too Many Requests</span> - We have sent too many
+                        <li><span class="text-danger">HTTP 429/999 Too Many Requests</span> - We have sent too many
                             requests!
                             Server
                             has likely blocked us but the link should still work.</li>
                         <li><span class="text-danger">ERROR CONNECTING</span> - Unknown error occured. Best to manually
                             check
                             the link to see the issue.</li>
+                        <li><span class="text-auth">HTTP 401/403 Forbidden</span> - Not authorized to view the page.
+                            Will
+                            need
+                            to be logged in to view the page. Needs manual check.</li>
                         <li><span class="text-warning">MAIL LINK</span> - Needs a manual check to see if email is
                             correct.
                         </li>

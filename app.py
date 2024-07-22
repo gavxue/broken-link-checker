@@ -48,6 +48,8 @@ def check_page(url, id, event):
                 line += 'HTTP ' + status_code
                 if status_code == '200':
                     status = 'text-success'
+                elif status_code == '401' or status_code == '403':
+                    status = 'text-auth'
             except requests.exceptions.HTTPError:
                 line += "HTTP ERROR"
             except requests.exceptions.ConnectionError:

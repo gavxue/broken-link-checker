@@ -86,4 +86,7 @@ $(document).ready(function () {
     $('#danger-checkbox').on('change', function () {
         filter('danger');
     })
+    $('#auth-checkbox').on('change', function () {
+        filter('auth');
+    })
 });
