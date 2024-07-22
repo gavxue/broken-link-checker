@@ -14,7 +14,9 @@ $(document).ready(function () {
     });
 
     socket.on('update_progress', function (res) {
-        $('#progress-percentage').text(`${Math.round(res.count / res.total * 100)}%`)
+        percentage = Math.round(res.count / res.total * 100)
+        $('#progress-percentage').text(`${percentage}%`)
+        $('#progress-bar').css('width', `${percentage}%`)
     })
 
     socket.on('create_section', function (res) {

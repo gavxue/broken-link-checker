@@ -18,8 +18,8 @@ thread_lock = Lock()
 thread_event = Event()
 
 url = ""
-section_count = 1
-section_total = 1
+section_count = 0
+section_total = 0
 
 def check_page(url, id, event):
     page = requests.get(url)
@@ -88,13 +88,15 @@ def check_nav(menu_items, event):
             
         section_count += 1
         socketio.emit('update_progress', {'count': section_count, 'total': section_total})
-        print(section_count, section_total)
 
     return True
 
 
 def background_thread(event):
     global thread, section_count, section_total
+    
+    section_count = 1
+    section_total = 1
 
     try:
         if event.is_set():
