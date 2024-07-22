@@ -136,41 +136,8 @@ def background_thread(event):
                 if not live:
                     return
 
-            # for i, menu_item in enumerate(menu_items):
-            #     # log section
-            #     menu_item_title = menu_item.find('a').text.strip()
-            #     socketio.emit('create_section', {'id': i, 'heading': menu_item_title})
-            #     submenu_items = menu_item.find_all('a', href=True)
-                
-            #     for submenu_item in submenu_items:
-            #         # log section item
-            #         socketio.emit('create_link', {'section_id': i, 'message': submenu_item.text.strip(), 'class': 'page'})
-            #         live = check_page('https://uwaterloo.ca' + submenu_item.get('href').strip(), i, event)
-
-            #         if not live:
-            #             return
-
-            # secondary nav (if exists)
-            # if len(navs) == 3:
-            #     sec_nav = navs[2].find('ul')
-            #     menu_items = sec_nav.find_all('li', {'class': 'menu__item'}, recursive=False)
-
-            #     for i, menu_item in enumerate(menu_items):
-            #         # log section
-            #         menu_item_title = menu_item.find('a').text.strip()
-            #         socketio.emit('create_section', {'id': str(i) + 'sec', 'heading': menu_item_title})
-            #         submenu_items = menu_item.find_all('a', href=True)
-                    
-            #         for submenu_item in submenu_items:
-            #             # log section item
-            #             socketio.emit('create_link', {'section_id': str(i) + 'sec', 'message': submenu_item.text.strip(), 'class': 'page'})
-            #             live = check_page('https://uwaterloo.ca' + submenu_item.get('href').strip(), str(i) + 'sec', event)
-
-            #             if not live:
-            #                 return
-            
             # log completion
-            socketio.emit('status', {'message': 'Success!', 'class': 'text-success'})
+            socketio.emit('status', {'message': 'Done', 'class': 'text-success'})
 
     finally:
         event.clear()

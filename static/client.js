@@ -9,8 +9,9 @@ $(document).ready(function () {
     // to the client. The data is then displayed in the "Received"
     // section of the page.
     socket.on('status', function (res) {
-        $('#status').append(`<span class="${res.class}">${res.message}</span>`)
+        $('#status').html(`<span class="${res.class}">${res.message}</span>`)
         $('button#stop').prop('disabled', true)
+        $('#progress-bar').removeClass('progress-bar-animated')
     });
 
     socket.on('update_progress', function (res) {
