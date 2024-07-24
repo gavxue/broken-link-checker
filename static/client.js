@@ -41,6 +41,7 @@ $(document).ready(function () {
         filter('success')
         filter('warning')
         filter('danger')
+        filter('auth')
     })
 
     // stop background task execution
