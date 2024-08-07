@@ -5,7 +5,7 @@ A web application that automates broken link detection for UWaterloo webpages. C
 This project uses Flask as the backend, BeautifulSoup4 and requests for web-scraping, SocketIO for client-server communication, and is deployed using Heroku.
 
 ## How to Use
-Visit the [webpage](https://ceeit-broken-link-35c22b71225d.herokuapp.com/) and follow the instructions.
+Visit the [webpage](https://ceeit-link-checker.onrender.com/) and follow the instructions.
 
 ## Future Improvements
 - scale for more users (current deployment can only run one execution at a time)
