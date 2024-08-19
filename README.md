@@ -13,6 +13,7 @@ Web-based version of [previous script](https://github.com/gavxue/broken-link-aut
 
 ## How to Use
 Visit the [webpage](https://ceeit-link-checker.onrender.com/) and follow the instructions.
+
 Note: it will take some time to startup since Render shuts down apps after inactivity.
 
 ## Future Improvements
