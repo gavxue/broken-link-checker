@@ -12,7 +12,8 @@ Web-based version of [previous script](https://github.com/gavxue/broken-link-aut
 - Render (previously Heroku) for deployment
 
 ## How to Use
-Visit the [webpage](https://ceeit-link-checker.onrender.com/) and follow the instructions. Note: it will take some time to startup since Render shuts down apps after inactivity.
+Visit the [webpage](https://ceeit-link-checker.onrender.com/) and follow the instructions.
+Note: it will take some time to startup since Render shuts down apps after inactivity.
 
 ## Future Improvements
 - scale for more users (current deployment can only run one execution at a time)
