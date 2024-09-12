@@ -9,10 +9,10 @@ Web-based version of [previous script](https://github.com/gavxue/broken-link-aut
 - Flask for the backend
 - BeautifulSoup4 module for web-scraping
 - SocketIO for client-server communication
-- Render (previously Heroku) for deployment
+- Render/Heroku for deployment
 
 ## How to Use
-Visit the [webpage](https://ceeit-link-checker.onrender.com/) and follow the instructions.
+Visit the [webpage](https://ceeit-broken-link-35c22b71225d.herokuapp.com/) and follow the instructions.
 
 Note: it will take some time to startup since Render shuts down apps after inactivity.
 
